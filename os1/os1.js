@@ -41,17 +41,19 @@ class Process{
                 }
             }
             if(!this.finished){
-            stage.find('#txt:p' + this.pid + 'reg').text('ax=' + this.ax + '\n' + 'bx=' + this.bx);
-            stage.find('#txt:p' + this.pid + 'stat').text(this.status);
-            stage.find('#txt:p' + this.pid + 'pc').text(this.pc);
-            stage.find('#prec' + this.pid).stroke('#dd1514');
-            stage.find('#pstat' + this.pid).fill('green');
-            stage.find('#pstat' + this.pid).text("Status=Running");
+                stage.find('#txt:p' + this.pid + 'reg').text('ax=' + this.ax + '\n' + 'bx=' + this.bx);
+                stage.find('#txt:p' + this.pid + 'stat').text(this.status);
+                stage.find('#txt:p' + this.pid + 'pc').text(this.pc);
+                stage.find('#prec' + this.pid).stroke('#dd1514');
+                stage.find('#pstat' + this.pid).fill('green');
+                stage.find('#pstat' + this.pid).text("Status=Running");
+                layer.draw();
             }
         }
     }
 
     stop(){
+        //console.log("o hoy hoy");
         if(this.finished)
             return;
         this.status="Ready";
@@ -63,14 +65,13 @@ class Process{
     }
 
     end(){
+        console.log("o hoy hoy");
         this.status="Ended";
         this.finished=true;
         stage.find('#txt:p'+this.pid+'stat').text(this.status);
         stage.find('#prec'+this.pid).stroke('#555');
         stage.find('#pstat' + this.pid).text("Status=End");
         stage.find('#pstat' + this.pid).fill('red');
-
-
     }
 }
 
@@ -420,13 +421,9 @@ var animRight = new Konva.Animation(function(frame) {
         timeDiff = frame.timeDiff,
         frameRate = frame.frameRate;
 
-    if (time - lt > 100){
+    if (time - lt > 1000){
         lt=time;
-        tempC++;
         runNextCommand();
-        // if((tempC%9==7 || tempC%9==1)&& !poc1.finished && !poc2.finished ){
-        //     sendInterrupt();
-        // }
 
     }
 
@@ -461,4 +458,4 @@ function incorrectAnim(){
     animWrong.start();
 }
 
-anim.start();
+//animRight.start();
