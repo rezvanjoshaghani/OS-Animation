@@ -15,39 +15,38 @@ class Process{
             this.pc += 1;
             if (this.pc == 1) {
                 this.ax = 0;
+                this.drawChanges();
             } else if (this.pc == 2) {
-                console.log("at loop")
+                this.drawChanges();
             } else if (this.pc == 3) {
                 this.countCopy = count;
                 this.bx = count;
+                this.drawChanges();
             } else if (this.pc == 4) {
                 this.countCopy++;
                 this.bx++;
+                this.drawChanges();
             } else if (this.pc == 5) {
                 count = this.countCopy;
                 countText.text("Count= " + count);
+                this.drawChanges();
             } else if (this.pc == 6) {
                 this.ax++;
+                this.drawChanges();
             } else if (this.pc == 7) {
-                console.log(this.bx);
+                this.drawChanges();
             } else if (this.pc == 8) {
-                if (this.ax < 5)
-                    this.pc = 2;
+                if (this.ax < 5) {
+                    this.drawChanges();
+                    this.pc = 1;
+                }
                 else {
-                    console.log("finish")
+                    this.drawChanges();
                     this.end();
                     stage.find('#txt:p' + this.pid + 'pc').text(this.pc);
 
+
                 }
-            }
-            if(!this.finished){
-                stage.find('#txt:p' + this.pid + 'reg').text('ax=' + this.ax + '\n' + 'bx=' + this.bx);
-                stage.find('#txt:p' + this.pid + 'stat').text(this.status);
-                stage.find('#txt:p' + this.pid + 'pc').text(this.pc);
-                stage.find('#prec' + this.pid).stroke('#dd1514');
-                stage.find('#pstat' + this.pid).fill('green');
-                stage.find('#pstat' + this.pid).text("Status=Running");
-                layer.draw();
             }
         }
     }
@@ -62,17 +61,59 @@ class Process{
         stage.find('#txt:p'+this.pid+'pc').text(this.pc);
         stage.find('#pstat'+this.pid).fill('#555');
         stage.find('#pstat'+this.pid).text("Status=Ready");
+        layer.draw();
     }
 
     end(){
-        console.log("o hoy hoy");
         this.status="Ended";
         this.finished=true;
         stage.find('#txt:p'+this.pid+'stat').text(this.status);
         stage.find('#prec'+this.pid).stroke('#555');
         stage.find('#pstat' + this.pid).text("Status=End");
         stage.find('#pstat' + this.pid).fill('red');
+        layer.draw();
     }
+
+    makeBold(id){
+        for(let i=1;i<=8;i++){
+            if(i!=id){
+                stage.find('#prog'+this.pid+i).fontStyle('normal');
+            }
+            else{
+                stage.find('#prog'+this.pid+id).fontStyle('bold');
+            }
+        }
+    }
+
+    drawChanges(){
+        if(!this.finished){
+            this.makeBold(this.pc);
+            stage.find('#txt:p' + this.pid + 'reg').text('ax=' + this.ax + '\n' + 'bx=' + this.bx);
+            stage.find('#txt:p' + this.pid + 'stat').text(this.status);
+            stage.find('#txt:p' + this.pid + 'pc').text(this.pc);
+            stage.find('#prec' + this.pid).stroke('#dd1514');
+            stage.find('#pstat' + this.pid).fill('green');
+            stage.find('#pstat' + this.pid).text("Status=Running");
+            layer.draw();
+        }
+    }
+}
+
+function makeText(x,y,str,id) {
+
+    return new Konva.Text({
+        x: x,
+        y: y,
+        text: str,
+        id: 'prog'+id,
+        fontSize: 18,
+        fontFamily: 'Calibri',
+        fill: '#000000',
+        width: 300,
+        padding: 20,
+        // align: 'center',
+    });
+
 }
 
 var runningProcess=1;
@@ -93,7 +134,7 @@ function runNextCommand() {
 }
 
 function sendInterrupt() {
-    console.log("This means change");
+    //console.log("This means change");
 
     if (runningProcess==1){
         poc1.stop();
@@ -224,15 +265,7 @@ var p1 = new Konva.Text({
     x: 20,
     y: 60,
     text:
-        "Process 1\n\n \n " +
-        "1. mov \t ax \t 0 \n " +
-        "2. loop: \n " +
-        "3. \t\t LD \t [0xAA23] \t bx \n " +
-        "4. \t\t ADD \t bx \t 1 \n " +
-        "5. \t\t STR \t bx \t [0xAA23] \n " +
-        "6. \t\t ADD \t ax \t 1 \n " +
-        "7. \t\t comp \t ax \t 5 \n " +
-        "8. \t\t jnz \t loop   \n",
+        "Process 1\n\n \n " ,
     fontSize: 18,
     fontFamily: 'Calibri',
     fill: '#000000',
@@ -241,19 +274,12 @@ var p1 = new Konva.Text({
    // align: 'center',
 });
 
+
 var p2 = new Konva.Text({
     x: 240,
     y: 60,
     text:
-        "Process 2\n\n \n " +
-        "1. mov \t ax \t 0 \n " +
-        "2. loop: \n " +
-        "3. \t\t LD \t [0xAA23] \t bx \n " +
-        "4. \t\t ADD \t bx \t 1 \n " +
-        "5. \t\t STR \t bx \t [0xAA23] \n " +
-        "6. \t\t ADD \t ax \t 1 \n " +
-        "7. \t\t comp \t ax \t 5 \n " +
-        "8. \t\t jnz \t loop   \n",
+        "Process 2\n\n \n " ,
     fontSize: 18,
     fontFamily: 'Calibri',
     fill: '#000000',
@@ -264,7 +290,7 @@ var p2 = new Konva.Text({
 
 var status1 = new Konva.Text({
     x:  20,
-    y: p1.height()+ 65,
+    y: 250+ 65,
     id:'pstat1',
     text: "status=Ready",
     fontSize: 28,
@@ -274,7 +300,7 @@ var status1 = new Konva.Text({
 
 var status2 = new Konva.Text({
     x: 250,
-    y: p2.height()+ 65,
+    y: 250+ 65,
     id:'pstat2',
     text: "status=Ready",
     fontSize: 28,
@@ -290,7 +316,7 @@ var rect1 = new Konva.Rect({
     strokeWidth: 5,
     fill: '#ddd',
     width: 200,
-    height: p1.height(),
+    height: 250,
     shadowColor: 'black',
     shadowBlur: 10,
     shadowOffsetX: 10,
@@ -307,7 +333,7 @@ var rect2 = new Konva.Rect({
     strokeWidth: 5,
     fill: '#ddd',
     width: 200,
-    height: p2.height(),
+    height: 250,
     shadowColor: 'black',
     shadowBlur: 10,
     shadowOffsetX: 10,
@@ -402,6 +428,25 @@ layer.add(memoryDown);
 layer.add(countText);
 // layer.add(arrowUP);
 // layer.add(arrowDown);
+
+var prog=["1. mov \t ax \t 0" ,
+    "2. loop:" ,
+    "3. \t\t LD \t [0xAA23] \t bx" ,
+    "4. \t\t ADD \t bx \t 1 ",
+    "5. \t\t STR \t bx \t [0xAA23]" ,
+    "6. \t\t ADD \t ax \t 1",
+    "7. \t\t comp \t ax \t 5" ,
+    "8. \t\t jnz \t loop "];
+
+for (let i=0;i<prog.length;i++){
+    let t=makeText(20,80+(i*20),prog[i],'1'+(i+1));
+    layer.add(t)
+}
+
+for (let i=0;i<prog.length;i++){
+    let t=makeText(240,80+(i*20),prog[i],'2'+(i+1));
+    layer.add(t)
+}
 
 
 
