@@ -138,12 +138,12 @@ function sendInterrupt() {
 
     if (runningProcess==1){
         poc1.stop();
-        poc2.run();
+        poc2.drawChanges();
         runningProcess=2;
     }
     else if(runningProcess==2){
         poc2.stop();
-        poc1.run();
+        poc1.drawChanges();
         runningProcess=1;
     }
 
